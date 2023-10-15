@@ -1,2 +1,2 @@
 
-from color_reader import reader_3mf
+from .color_reader import reader_3mf
