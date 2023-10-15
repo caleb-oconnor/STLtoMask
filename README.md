@@ -6,7 +6,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Label JSON](#label-json)
+  - [Example](#example)
 
   
 ## Overview
@@ -49,5 +49,11 @@ optional arguments:
   -r ROTATION [ROTATION ...], --rotation ROTATION [ROTATION ...]
                         Rotation in dictionary form indicating order ex: {yxz: [10, 30, 0}, meaning rotate y=10 degrees then x=30 degrees
   -f, --flip            Flips axial plane along the vertical line
+
+```
+
+### Example
+```bash
+python converter.py -i '\stl_filepath' -o 'output_dir' -s 1 1 1 -m '\3mf_filepath' -r xyz 10 20 30.1 -f False
 
 ```
