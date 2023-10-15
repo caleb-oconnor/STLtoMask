@@ -6,8 +6,9 @@ Author - Caleb O'Connor
 Email - csoconnor@mdanderson.org
 
 Description:
-    Create a 3D binary mask based off of an STL file and user defined spacing. Additionally, options exist for rotating
-    the mesh from the STL file and adding a 3MF file to create a "color-intensity" on the surface of the mask.
+    Create a 3D image based off of an STL file and user defined spacing. Additional, options exist for rotating the
+    mesh, adding a 3MF file to create a "color-intensity" on the surface of the image, and flipping the iamge and
+    mesh along the vertical axial plane.
 
     Required inputs:
         - STL file input
@@ -21,10 +22,11 @@ Description:
           have the correct orientation along the z-axis (head-toe or toe-head). This module is for when the user
           already knows what rotations to apply, if unknown I suggest testing in pyvista with different rotation and
           plotting the results.
+        - Flip the mask and mesh along the vertical plane in the axial plane
 
     Note:
         Adding a color file will greatly increase the computation time. Difficult to approximate total time be roughly
-        15 minutes for 1,000,000 node mesh.
+        45 minutes for 1,000,000 node mesh.
 
 """
 
@@ -39,17 +41,17 @@ import SimpleITK as sitk
 
 from color_reader import reader_3mf
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('-i', '--input', default='/data', help='STL file', required=True)
-# parser.add_argument('-o', '--output', default='/output', help='Directory to output mask and STL if edited',
-#                     required=True)
-# parser.add_argument('-s', '--spacing', nargs='+', help='Output mask spacing in mm example [1, 1, 1]', required=True)
-# parser.add_argument('-m', '--three_mf', default='/data', help='3mf file needed for adding intensity to mask')
-# parser.add_argument('-r', '--rotation', nargs='+', help='Rotation in dictionary form indicating order ex: {yxz: [10, '
-#                                                         '30, 0}, meaning rotate y=10 degrees then x=30 degrees')
-# parser.add_argument('-c', '--colormap', nargs='+', help='')
-#
-# args, _ = parser.parse_known_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--input', help='STL file', required=True)
+parser.add_argument('-o', '--output', help='Directory to output mask and STL if edited',
+                    required=True)
+parser.add_argument('-s', '--spacing', nargs='+', help='Output mask spacing in mm example [1, 1, 1]', required=True)
+parser.add_argument('-m', '--three_mf', help='3mf file needed for adding intensity to mask')
+parser.add_argument('-r', '--rotation', nargs='+', help='Rotation in dictionary form indicating order ex: {yxz: [10, '
+                                                        '30, 0}, meaning rotate y=10 degrees then x=30 degrees')
+parser.add_argument('-f', '--flip', action='store_true', help='Flips axial plane along the vertical line')
+
+args, _ = parser.parse_known_args()
 
 
 def export_images(mask, final_mesh, expand_bounds, spacing, output_path):
@@ -141,10 +143,7 @@ def add_color(mask, mesh, point_color, spacing):
             for jj in range(dim[2]):
                 for kk in range(dim[1]):
                     if mask[ii, jj, kk] == 1:
-                        coord_area = [mask[ii, jj-1, kk-1], mask[ii, jj-1, kk], mask[ii, jj-1, kk+1],
-                                      mask[ii, jj, kk-1], mask[ii, jj, kk], mask[ii, jj, kk+1],
-                                      mask[ii, jj+1, kk-1], mask[ii, jj+1, kk], mask[ii, jj+1, kk+1]]
-                        if np.sum(coord_area) < 9:
+                        if np.sum(mask[ii-1:ii+2, jj-1:jj+2, kk-1:kk+2]) < 27:
                             coord.append([ii, jj, kk])
 
     for ii, c in enumerate(coord):
@@ -154,7 +153,7 @@ def add_color(mask, mesh, point_color, spacing):
         point_sub = points - location
         dist = np.sqrt(point_sub[:, 0]**2 + point_sub[:, 1]**2 + point_sub[:, 2]**2)
         point_idx = np.argmin(dist)
-        color_sum = np.sum(point_color[point_idx])
+        color_sum = np.round(10*np.sum(point_color[point_idx])/(255+255+255))
         mask[c[0], c[1], c[2]] = color_sum
 
     return mask
@@ -228,16 +227,19 @@ def mesh_rotation(temp_mesh, rotation):
     return temp_mesh
 
 
-def stl_to_mask(input_path, output_path, spacing, three_mf=None, rotation=None):
+def stl_to_mask(input_path, output_path, spacing, three_mf=None, rotation=None, flip=False):
     """
     This is the main function that reads in the STL, calls mesh_rotation function for applying rotations if they exist,
     create_mask for making the mask, lastly if a 3MF file then color intensity is applied to the surface of the mask.
+
+    There is a flip feature which will flip the mask and mesh along the vertical plane in the axial plane.
 
     :param input_path:
     :param output_path:
     :param spacing:
     :param three_mf:
     :param rotation:
+    :param flip
     :return:
     """
     reader = pv.get_reader(input_path)
@@ -256,18 +258,16 @@ def stl_to_mask(input_path, output_path, spacing, three_mf=None, rotation=None):
     else:
         final_mask = mask
 
-    export_images(final_mask, mesh, expand_bounds, spacing, output_path)
+    if flip:
+        flip_mask = np.flip(final_mask, 2)
+        flip_mesh = mesh.reflect((1, 0, 0), point=mesh.center)
+        export_images(flip_mask, flip_mesh, expand_bounds, spacing, output_path)
+    else:
+        export_images(final_mask, mesh, expand_bounds, spacing, output_path)
 
 
 if __name__ == "__main__":
-    # output_path = args.output
-    # spacing = [float(s) for s in args.spacing]
-    # if not os.path.exists(output_path):
-    #     os.makedirs(output_path)
-
-    stl_to_mask(r'Z:\Morfeus\Derek\Topf request\2023-06-21_OCCR.stl',
-                r'Z:\Morfeus\Derek\Topf request\Mask',
-                [1, 1, 1],
-                three_mf=r'Z:\Morfeus\Derek\2023-06-21_OCCR.3mf',
-                rotation={'xyz': [-120, 10, 0]})
+    arg_spacing = [int(s) for s in args.spacing]
+    arg_rotation = {args.rotation[0]: [float(args.rotation[1]), float(args.rotation[2]), float(args.rotation[3])]}
+    stl_to_mask(args.input, args.output, arg_spacing, args.three_mf, arg_rotation, args.flip)
 
