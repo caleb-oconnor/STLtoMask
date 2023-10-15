@@ -45,10 +45,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='STL file', required=True)
 parser.add_argument('-o', '--output', help='Directory to output mask and STL if edited',
                     required=True)
-parser.add_argument('-s', '--spacing', nargs='+', help='Output mask spacing in mm example [1, 1, 1]', required=True)
+parser.add_argument('-s', '--spacing', nargs='+', help='Output mask spacing in mm example 1 1 1', required=True)
 parser.add_argument('-m', '--three_mf', help='3mf file needed for adding intensity to mask')
-parser.add_argument('-r', '--rotation', nargs='+', help='Rotation in dictionary form indicating order ex: {yxz: [10, '
-                                                        '30, 0}, meaning rotate y=10 degrees then x=30 degrees')
+parser.add_argument('-r', '--rotation', nargs='+', help='Rotation in dictionary form indicating order ex: yxz: 10 30 0}'
+                                                        ', meaning rotate y=10 degrees then x=30 degrees')
 parser.add_argument('-f', '--flip', action='store_true', help='Flips axial plane along the vertical line')
 
 args, _ = parser.parse_known_args()
