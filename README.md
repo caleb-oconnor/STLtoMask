@@ -1,38 +1,32 @@
 # STLtoMask
-Convert a STL file into a 3D mask.
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
+- [Installation](#installation)
+- [Example](#example)
   - [Label JSON](#label-json)
-  - [Running the Conversion](#running-the-conversion)
-  - [Running the Resample](#running-the-resample)
-- [Contributing](#contributing)
 
   
 ## Overview
 
-test
+Create a 3D image based off of an STL file and user defined spacing. Additional, options exist for rotating the mesh, adding a 3MF file to create a "color-intensity" on the surface of the image, and flipping the iamge and mesh along the vertical axial plane.
 
 ## Features
 
-test
+Converts STL file to a 3D image.
+Options:
+  - Add 3MF file to transfer mesh color to surface insensity on the image.
+  - Allows mesh rotation before image creation.
+  - Flip image/mesh before output along the vertical axis in the axial plane.
 
-## Getting Started
 
-### Prerequisites
+## Installation
 
-test
+Using pip:
+  pip install StlMaskConverter
 
-### Installation
-
-test
-
-## Usage
+## Example
 
 ### Label JSON
