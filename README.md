@@ -24,10 +24,9 @@ Options:
 
 
 ## Installation
-
-Using pip:
-  pip install StlMaskConverter
+Using [pip](https://pip.pypa.io/en/stable/):
+```
+pip install StlMaskConverter
+```
 
 ## Example
-
-### Label JSON
