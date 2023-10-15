@@ -11,7 +11,13 @@
   
 ## Overview
 
-Create a 3D image based off of an STL file and user defined spacing. Additional, options exist for rotating the mesh, adding a 3MF file to create a "color-intensity" on the surface of the image, and flipping the iamge and mesh along the vertical axial plane.
+Create a 3D image based off of an STL file and user defined spacing. Additional, options exist for rotating the mesh, adding a 3MF file to create a "color-intensity" on the surface of the image, and flipping the image and mesh along the vertical axial plane. 
+
+The script produces 2 files: 1) Metaimage file for the image, 2) STL file just incase any rotations/flips were added (makes this file even if nothing was changed from the original STL file).
+
+Notes:
+  - The spacing must be integeres, even if floats are input they will be converted.
+  - Adding a 3MF file will greatly increase the computation time depending on mesh size ~ 30 minutes for 1 million points.
 
 ## Features
 
