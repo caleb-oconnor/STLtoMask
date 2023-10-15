@@ -16,6 +16,7 @@ Create a 3D image based off of an STL file and user defined spacing. Additional,
 ## Features
 
 Converts STL file to a 3D image.
+
 Options:
   - Add 3MF file to transfer mesh color to surface insensity on the image.
   - Allows mesh rotation before image creation.
