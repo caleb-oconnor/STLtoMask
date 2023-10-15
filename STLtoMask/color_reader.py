@@ -117,3 +117,6 @@ def reader_3mf(path, mesh=None):
             point_color[f[2]] = tri_color[ii][3:]
 
     return tri_color, point_color
+
+if __name__ == '__main__':
+    pass
