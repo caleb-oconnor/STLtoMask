@@ -22,7 +22,7 @@ Description:
           have the correct orientation along the z-axis (head-toe or toe-head). This module is for when the user
           already knows what rotations to apply, if unknown I suggest testing in pyvista with different rotation and
           plotting the results.
-        - Flip the mask and mesh along the vertical plane in the axial plane
+        - Flip the mask and mesh along the vertical plane in the axial plane.
 
     Note:
         Adding a color file will greatly increase the computation time. Difficult to approximate total time be roughly
