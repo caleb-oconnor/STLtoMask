@@ -39,7 +39,7 @@ import numpy as np
 import pyvista as pv
 import SimpleITK as sitk
 
-from color_reader import reader_3mf
+from STLtoMask.color_reader import reader_3mf
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='STL file', required=True)
