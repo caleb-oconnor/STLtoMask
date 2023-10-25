@@ -32,7 +32,7 @@ Options:
 ## Installation
 Using [pip](https://pip.pypa.io/en/stable/):
 ```
-pip install StlMaskConverter
+pip install STLtoMask
 ```
 
 ## Usage
