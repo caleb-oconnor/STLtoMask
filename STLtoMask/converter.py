@@ -33,7 +33,6 @@ Description:
 import os
 import cv2
 import time
-import argparse
 
 import numpy as np
 import pyvista as pv
@@ -50,11 +49,11 @@ def export_images(mask, final_mesh, expand_bounds, spacing, output_path):
 
     Note: This is added to the end of the MHD file "ElementNumberOfChannels", this is a RayStation requirement.
 
-    :param mask:
-    :param final_mesh:
-    :param expand_bounds:
-    :param spacing:
-    :param output_path:
+    :param mask: output mask
+    :param final_mesh: output mesh
+    :param expand_bounds: mask origin
+    :param spacing: output mask spacing
+    :param output_path: output directory
     :return:
     """
     image = sitk.GetImageFromArray(np.short(mask))
@@ -75,9 +74,9 @@ def export_images(mask, final_mesh, expand_bounds, spacing, output_path):
 
     sitk.WriteImage(image, os.path.join(output_path, mhd_file + '.mhd'))
     time.sleep(3)
-    file1 = open(os.path.join(output_path, mhd_file + '.mhd'), "a")
-    file1.write("ElementNumberOfChannels = 1" + "\n")
-    file1.close()
+    file = open(os.path.join(output_path, mhd_file + '.mhd'), "a")
+    file.write("ElementNumberOfChannels = 1" + "\n")
+    file.close()
 
     final_mesh.save(os.path.join(output_path, stl_file + '.stl'))
 
@@ -222,12 +221,13 @@ def stl_to_mask(input_path, output_path, spacing, three_mf=None, rotation=None, 
 
     There is a flip feature which will flip the mask and mesh along the vertical plane in the axial plane.
 
-    :param input_path:
-    :param output_path:
-    :param spacing:
-    :param three_mf:
-    :param rotation:
-    :param flip
+    :param input_path: path to STL file
+    :param output_path: path where the
+    :param spacing: mask output spacing as a list [1, 1, 1] (x, y, z)
+    :param three_mf: 3mf file to add intensity to the mask
+    :param rotation: rotation in dictionary form indicating order ex: {yxz: [10, 30, 0}, meaning rotate y=10 degrees
+                     then x=30 degrees
+    :param flip: flips axial plane along the vertical line
     :return:
     """
     reader = pv.get_reader(input_path)
@@ -255,20 +255,5 @@ def stl_to_mask(input_path, output_path, spacing, three_mf=None, rotation=None, 
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', help='STL file', required=True)
-    parser.add_argument('-o', '--output', help='Directory to output mask and STL if edited',
-                        required=True)
-    parser.add_argument('-s', '--spacing', nargs='+', help='Output mask spacing in mm example 1 1 1', required=True)
-    parser.add_argument('-m', '--three_mf', help='3mf file needed for adding intensity to mask')
-    parser.add_argument('-r', '--rotation', nargs='+',
-                        help='Rotation in dictionary form indicating order ex: yxz: 10 30 0}'
-                             ', meaning rotate y=10 degrees then x=30 degrees')
-    parser.add_argument('-f', '--flip', action='store_true', help='Flips axial plane along the vertical line')
-
-    args, _ = parser.parse_known_args()
-
-    arg_spacing = [int(s) for s in args.spacing]
-    arg_rotation = {args.rotation[0]: [float(args.rotation[1]), float(args.rotation[2]), float(args.rotation[3])]}
-    stl_to_mask(args.input, args.output, arg_spacing, args.three_mf, arg_rotation, args.flip)
+    pass
 
