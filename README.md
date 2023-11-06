@@ -5,9 +5,9 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
-  - [Example](#example)
-
+- [Example](#example)
+  - [Basic](#basic)
+  - [Advanced](#advanced)
   
 ## Overview
 
@@ -35,31 +35,29 @@ Using [pip](https://pip.pypa.io/en/stable/):
 pip install STLtoMask
 ```
 
-## Usage
-To run the module, use the following command:
+## Examples
+### Basic
+```python
+from STLtoMask.converter import stl_to_mask
 
-```bash
-usage: converter.py [-h] -i INPUT -o OUTPUT -s SPACING [SPACING ...] [-m THREE_MF] [-r ROTATION [ROTATION ...]] [-f]
+input_path = r'/path/to/STL_file'
+output_path = r/path/to/export/data'
+spacing = [1, 1, 1]
 
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        STL file
-  -o OUTPUT, --output OUTPUT
-                        Directory to output mask and STL if edited
-  -s SPACING [SPACING ...], --spacing SPACING [SPACING ...]
-                        Output mask spacing in mm example [1, 1, 1]
-  -m THREE_MF, --three_mf THREE_MF
-                        3mf file needed for adding intensity to mask
-  -r ROTATION [ROTATION ...], --rotation ROTATION [ROTATION ...]
-                        Rotation in dictionary form indicating order ex: {yxz: [10, 30, 0}, meaning rotate y=10 degrees then x=30 degrees
-  -f, --flip            Flips axial plane along the vertical line
+stl_to_mask(input_path, output_path, spacing)
 
 ```
+### Advanced
+```python
+from STLtoMask.converter import stl_to_mask
 
-### Example
-```bash
-python converter.py -i '\stl_filepath' -o 'output_dir' -s 1 1 1 -m '\3mf_filepath' -r xyz 10 20 30.1 -f False
+input_path = r'/path/to/STL_file'
+output_path = r/path/to/export/data'
+spacing = [1, 1, 1]
+
+threemf_path = r'Z:\Morfeus\Derek\2023-06-21_OCCR.3mf'
+rotation = {'zxy': [10, 5, 20]}
+
+stl_to_mask(input_path, output_path, spacing, three_mf_path, rotation, flip=True)
 
 ```
