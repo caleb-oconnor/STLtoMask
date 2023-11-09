@@ -55,7 +55,7 @@ input_path = r'/path/to/STL_file'
 output_path = r/path/to/export/data'
 spacing = [1, 1, 1]
 
-threemf_path = r'Z:\Morfeus\Derek\2023-06-21_OCCR.3mf'
+threemf_path = r'/path/to/3mf_file'
 rotation = {'zxy': [10, 5, 20]}
 
 stl_to_mask(input_path, output_path, spacing, three_mf_path, rotation, flip=True)
